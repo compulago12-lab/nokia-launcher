@@ -1,0 +1,33 @@
+==========================================================
+  NOKIA RETRO LAUNCHER — CÓMO COMPILAR TU APK SIN PC
+  (100 % GRATIS DESDE TU SAMSUNG GALAXY A15 CON GITHUB)
+==========================================================
+
+1. Crea una cuenta gratuita en https://github.com desde el navegador
+   de tu celular (si ya tienes cuenta, solo inicia sesión).
+
+2. Crea un nuevo repositorio:
+   - Toca el botón "+" arriba a la derecha -> "New repository".
+   - Ponle el nombre que quieras (por ejemplo: nokia-launcher).
+   - Déjalo en Public o Private y toca "Create repository".
+
+3. Sube los archivos de este ZIP:
+   - Descomprime este archivo ZIP en tu celular (con "Mis Archivos" de Samsung).
+   - En tu repositorio de GitHub toca "uploading an existing file".
+   - Sube el contenido respetando las carpetas (incluyendo la carpeta oculta
+     .github/workflows/build-apk.yml).
+   - Toca "Commit changes".
+
+4. Descarga tu APK compilado automáticamente:
+   - Toca la pestaña "Actions" en tu repositorio de GitHub.
+   - Verás ejecutándose "Compilar APK Nokia Retro Launcher" (tarda ~2 minutos).
+   - Cuando salga el chulo verde, entra en esa ejecución, baja hasta "Artifacts"
+     y toca "NokiaRetroLauncher-APK" para descargar el ZIP con tu app-debug.apk.
+
+5. Instala y activa el launcher en tu Samsung Galaxy A15:
+   - Abre el archivo app-debug.apk e instálalo (acepta "Instalar apps desconocidas"
+     si Samsung te lo pide).
+   - Ve a Ajustes -> Aplicaciones -> Elegir aplicaciones predeterminadas ->
+     Aplicación de inicio -> selecciona "Nokia Launcher".
+   - ¡Listo! Cuando quieras volver a Samsung One UI, entra en "Ir a" ->
+     "Salir del Launcher" y vuelve a elegir One UI.
