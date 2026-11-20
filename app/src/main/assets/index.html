@@ -54,7 +54,7 @@
       background: var(--body-bg);
       display: flex;
       flex-direction: column;
-      padding: max(18px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+      padding: max(46px, calc(env(safe-area-inset-top) + 22px)) max(12px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
       position: relative;
       transition: background 0.22s ease;
     }
@@ -136,11 +136,11 @@
 
     .brand {
       text-align: center;
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 900;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.22em;
       color: var(--key-text);
-      margin-bottom: 10px;
+      margin-bottom: 14px;
       font-family: "Arial Black", "Inter", sans-serif;
       opacity: 0.92;
       flex-shrink: 0;
@@ -332,36 +332,51 @@
       opacity: 0.85;
     }
 
-    /* Cajón de apps (Menú) — animación de entrada (zoom-out) y salida (zoom-in) sobre la pantalla amarilla */
+    /* Cajón de apps (Menú) — animación 1:1 del video: entrada zoom-out dramática y salida zoom-in */
+    .home-view {
+      transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease;
+    }
+
+    .home-view.dimmed {
+      transform: scale(0.92);
+      opacity: 0.45;
+    }
+
     .menu-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(14, 15, 20, 0.74);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
+      background: rgba(12, 14, 18, 0.72);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
       color: #f3f4f6;
       display: flex;
       flex-direction: column;
       font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
       overflow: hidden;
       z-index: 15;
+      will-change: opacity;
+    }
+
+    .menu-scroll {
+      transform-origin: center center;
+      will-change: transform, opacity, filter;
     }
 
     .menu-overlay.entering {
-      animation: menuBackdropIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation: menuBackdropIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .menu-overlay.entering .menu-scroll {
-      animation: menuZoomEnter 0.36s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation: menuZoomEnter 0.46s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .menu-overlay.closing {
-      animation: menuBackdropOut 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation: menuBackdropOut 0.36s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       pointer-events: none;
     }
 
     .menu-overlay.closing .menu-scroll {
-      animation: menuZoomExit 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation: menuZoomExit 0.36s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
 
     @keyframes menuBackdropIn {
@@ -375,24 +390,32 @@
     }
 
     @keyframes menuZoomEnter {
-      from {
+      0% {
         opacity: 0;
-        transform: scale(2.05);
+        transform: scale(2.85) translateZ(0);
+        filter: blur(5px);
       }
-      to {
+      55% {
+        opacity: 0.95;
+        filter: blur(0.5px);
+      }
+      100% {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) translateZ(0);
+        filter: blur(0px);
       }
     }
 
     @keyframes menuZoomExit {
-      from {
+      0% {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) translateZ(0);
+        filter: blur(0px);
       }
-      to {
+      100% {
         opacity: 0;
-        transform: scale(2.05);
+        transform: scale(2.85) translateZ(0);
+        filter: blur(5px);
       }
     }
 
@@ -659,8 +682,10 @@
       font-family: inherit;
     }
 
-    .key:hover {
-      background: var(--key-hover);
+    @media (hover: hover) {
+      .key:hover {
+        background: var(--key-hover);
+      }
     }
 
     .key:active, .key.pressed {
@@ -1243,6 +1268,8 @@
           const overlay = document.getElementById("menuOverlay");
           if (overlay) {
             state.menuClosing = true;
+            const bgHome = lcdBody.querySelector(".home-view");
+            if (bgHome) bgHome.classList.remove("dimmed");
             overlay.classList.remove("entering");
             overlay.classList.add("closing");
             setTimeout(() => {
@@ -1250,7 +1277,7 @@
               state.view = "home";
               state.dialNumber = "";
               render();
-            }, 280);
+            }, 360);
             return;
           }
         }
@@ -1465,7 +1492,7 @@
           const enterClass = state.menuAnimateIn ? "entering" : "";
           state.menuAnimateIn = false;
           lcdBody.innerHTML = `
-            <div class="home-view">
+            <div class="home-view dimmed">
               <div class="home-date">${formatDate()}</div>
               <div class="home-clock-strip">
                 <div class="home-line"></div>
