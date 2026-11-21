@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Nokia Launcher — Prototipo 1:1 en Español</title>
+  <title>Nokia Classic Launcher — Español + Juegos Clásicos</title>
   <style>
     :root {
       --body-bg: #0c0d0f;
@@ -13,11 +13,12 @@
       --key-sub: #a1a1aa;
       --dpad-ring: #d4d4d8;
 
-      --lcd-bg: #b5a828;
-      --lcd-bg-dark: #a39720;
-      --lcd-ink: #11110d;
-      --lcd-highlight-bg: #11110d;
-      --lcd-highlight-ink: #c7ba30;
+      /* Color exacto verde-oliva muestreado del video de referencia (#9B9236) */
+      --lcd-bg: #9b9236;
+      --lcd-bg-dark: #8a822d;
+      --lcd-ink: #11120c;
+      --lcd-highlight-bg: #11120c;
+      --lcd-highlight-ink: #aba240;
     }
 
     * {
@@ -46,7 +47,6 @@
       padding: 0;
     }
 
-    /* Ajuste universal a pantalla completa en cualquier Android (Samsung Galaxy A15, 19.5:9, 20:9, 16:9) */
     .phone {
       width: 100%;
       height: 100%;
@@ -64,9 +64,9 @@
       }
       .phone {
         width: min(390px, 100%);
-        height: min(800px, calc(100% - 28px));
+        height: min(800px, calc(100vh - 28px));
         border-radius: 34px;
-        padding: 22px 14px 18px;
+        padding: 26px 14px 18px;
         box-shadow: 0 28px 70px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
       }
     }
@@ -101,20 +101,20 @@
     }
 
     /* Temas de pantalla LCD */
-    .phone[data-lcd="yellow"] {
-      --lcd-bg: #b5a828;
-      --lcd-bg-dark: #a39720;
-      --lcd-ink: #11110d;
-      --lcd-highlight-bg: #11110d;
-      --lcd-highlight-ink: #c7ba30;
+    .phone[data-lcd="olive"] {
+      --lcd-bg: #9b9236;
+      --lcd-bg-dark: #8a822d;
+      --lcd-ink: #11120c;
+      --lcd-highlight-bg: #11120c;
+      --lcd-highlight-ink: #aba240;
     }
 
     .phone[data-lcd="green"] {
-      --lcd-bg: #8baa68;
-      --lcd-bg-dark: #7a9858;
-      --lcd-ink: #14200c;
-      --lcd-highlight-bg: #14200c;
-      --lcd-highlight-ink: #9cbc76;
+      --lcd-bg: #86a662;
+      --lcd-bg-dark: #759452;
+      --lcd-ink: #121d0a;
+      --lcd-highlight-bg: #121d0a;
+      --lcd-highlight-ink: #97b872;
     }
 
     .phone[data-lcd="blue"] {
@@ -145,7 +145,7 @@
       flex-shrink: 0;
     }
 
-    /* Pantalla LCD proporcional para cualquier resolución Android */
+    /* Pantalla LCD proporcional universal */
     .lcd {
       flex: 0 0 46%;
       height: 46%;
@@ -172,11 +172,6 @@
       flex-shrink: 0;
     }
 
-    .lcd-status.dark-status {
-      background: #14151a;
-      color: #f3f4f6;
-    }
-
     .status-left, .status-right {
       display: flex;
       align-items: center;
@@ -200,6 +195,12 @@
       justify-content: space-between;
       padding: 0 0 2px;
       position: relative;
+      transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease;
+    }
+
+    .home-view.dimmed {
+      transform: scale(0.92);
+      opacity: 0.45;
     }
 
     .home-date {
@@ -264,7 +265,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
     }
 
-    /* Llamada */
+    /* Llamada / Vista previa */
     .calling-view {
       flex: 1;
       display: flex;
@@ -294,7 +295,7 @@
       50% { transform: scale(1.08); opacity: 1; }
     }
 
-    /* Listas (Ir a / Personalizar) */
+    /* Listas (Ir a / Juegos / Personalizar / Submenú Snake II) */
     .list-view {
       flex: 1;
       display: flex;
@@ -307,12 +308,12 @@
     .list-header {
       text-align: center;
       font-size: 12px;
-      font-weight: 700;
-      padding: 2px 0 8px;
+      font-weight: 800;
+      padding: 2px 0 6px;
     }
 
     .list-item {
-      padding: 9px 10px;
+      padding: 8px 10px;
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
@@ -332,16 +333,35 @@
       opacity: 0.85;
     }
 
-    /* Cajón de apps (Menú) — animación 1:1 del video: entrada zoom-out dramática y salida zoom-in */
-    .home-view {
-      transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease;
+    /* Barra de nivel estilo Nokia 3310 (Snake II) */
+    .level-bars-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
     }
 
-    .home-view.dimmed {
-      transform: scale(0.92);
-      opacity: 0.45;
+    .level-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      height: 76px;
     }
 
+    .level-bar {
+      width: 14px;
+      border: 1.5px solid var(--lcd-ink);
+      background: transparent;
+    }
+
+    .level-bar.filled {
+      background: var(--lcd-ink);
+    }
+
+    /* Cajón de apps (Menú) — animación 1:1 del video */
     .menu-overlay {
       position: absolute;
       inset: 0;
@@ -358,68 +378,6 @@
     }
 
     .menu-scroll {
-      transform-origin: center center;
-      will-change: transform, opacity, filter;
-    }
-
-    .menu-overlay.entering {
-      animation: menuBackdropIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    .menu-overlay.entering .menu-scroll {
-      animation: menuZoomEnter 0.46s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    .menu-overlay.closing {
-      animation: menuBackdropOut 0.36s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-      pointer-events: none;
-    }
-
-    .menu-overlay.closing .menu-scroll {
-      animation: menuZoomExit 0.36s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-
-    @keyframes menuBackdropIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes menuBackdropOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
-
-    @keyframes menuZoomEnter {
-      0% {
-        opacity: 0;
-        transform: scale(2.85) translateZ(0);
-        filter: blur(5px);
-      }
-      55% {
-        opacity: 0.95;
-        filter: blur(0.5px);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) translateZ(0);
-        filter: blur(0px);
-      }
-    }
-
-    @keyframes menuZoomExit {
-      0% {
-        opacity: 1;
-        transform: scale(1) translateZ(0);
-        filter: blur(0px);
-      }
-      100% {
-        opacity: 0;
-        transform: scale(2.85) translateZ(0);
-        filter: blur(5px);
-      }
-    }
-
-    .menu-scroll {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
@@ -429,15 +387,28 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 12px 6px;
       align-content: start;
+      transform-origin: center center;
+      will-change: transform, opacity, filter;
     }
 
-    .menu-scroll::-webkit-scrollbar {
-      width: 3px;
-    }
+    .menu-scroll::-webkit-scrollbar { width: 3px; }
+    .menu-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.25); border-radius: 999px; }
 
-    .menu-scroll::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.25);
-      border-radius: 999px;
+    .menu-overlay.entering { animation: menuBackdropIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .menu-overlay.entering .menu-scroll { animation: menuZoomEnter 0.46s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .menu-overlay.closing { animation: menuBackdropOut 0.36s cubic-bezier(0.4, 0, 0.2, 1) forwards; pointer-events: none; }
+    .menu-overlay.closing .menu-scroll { animation: menuZoomExit 0.36s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+    @keyframes menuBackdropIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes menuBackdropOut { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes menuZoomEnter {
+      0% { opacity: 0; transform: scale(2.85) translateZ(0); filter: blur(5px); }
+      55% { opacity: 0.95; filter: blur(0.5px); }
+      100% { opacity: 1; transform: scale(1) translateZ(0); filter: blur(0px); }
+    }
+    @keyframes menuZoomExit {
+      0% { opacity: 1; transform: scale(1) translateZ(0); filter: blur(0px); }
+      100% { opacity: 0; transform: scale(2.85) translateZ(0); filter: blur(5px); }
     }
 
     .app-tile {
@@ -457,9 +428,7 @@
       border-color: rgba(250, 204, 21, 0.9);
     }
 
-    .app-tile:active {
-      transform: scale(0.92);
-    }
+    .app-tile:active { transform: scale(0.92); }
 
     .app-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
     .app-icon {
@@ -486,32 +455,8 @@
       width: 100%;
     }
 
-    .menu-dots {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 0 6px;
-    }
-
-    .menu-dots button {
-      width: 5px;
-      height: 5px;
-      padding: 0;
-      border: none;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.32);
-      cursor: pointer;
-      transition: background 0.15s ease, transform 0.15s ease;
-    }
-
-    .menu-dots button.active {
-      background: #ffffff;
-      transform: scale(1.25);
-    }
-
-    /* Snake */
-    .snake-view {
+    /* Juegos Canvas (Snake II / Space Impact) */
+    .game-view {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -519,34 +464,37 @@
       overflow: hidden;
     }
 
-    .snake-hud {
+    .game-hud {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-size: 11px;
       font-weight: 900;
       padding-bottom: 3px;
       border-bottom: 1.5px solid var(--lcd-ink);
       margin-bottom: 4px;
+      letter-spacing: 0.04em;
     }
 
-    .snake-canvas-wrap {
+    .game-canvas-wrap {
       flex: 1;
       position: relative;
       border: 2px solid var(--lcd-ink);
-      background: var(--lcd-bg-dark);
+      background: var(--lcd-bg);
       overflow: hidden;
     }
 
-    #snakeCanvas {
+    .game-canvas {
       width: 100%;
       height: 100%;
       display: block;
+      image-rendering: pixelated;
     }
 
-    .snake-overlay {
+    .game-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(17, 17, 13, 0.86);
+      background: rgba(17, 18, 12, 0.88);
       color: var(--lcd-highlight-ink);
       display: flex;
       flex-direction: column;
@@ -557,6 +505,58 @@
       gap: 6px;
       font-size: 12px;
       font-weight: 800;
+    }
+
+    /* Bantumi (Nokia 3310) */
+    .bantumi-board {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 5px;
+      align-items: center;
+      padding: 4px 2px;
+    }
+
+    .bantumi-store {
+      height: 116px;
+      border: 2px solid var(--lcd-ink);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 900;
+      background: var(--lcd-bg-dark);
+    }
+
+    .bantumi-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bantumi-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+    }
+
+    .bantumi-pit {
+      height: 46px;
+      border: 1.5px solid var(--lcd-ink);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .bantumi-pit.selected {
+      background: var(--lcd-highlight-bg);
+      color: var(--lcd-highlight-ink);
     }
 
     /* Calculadora */
@@ -611,10 +611,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
     }
 
-    .lcd-softkeys.hidden {
-      display: none;
-    }
-
+    .lcd-softkeys.hidden { display: none; }
     .soft-left { text-align: left; }
     .soft-center { text-align: center; }
     .soft-right { text-align: right; }
@@ -640,12 +637,9 @@
       font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
     }
 
-    .lcd-toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .lcd-toast.show { opacity: 1; transform: translateY(0); }
 
-    /* Teclado negro mate continuo adaptable a cualquier altura */
+    /* Teclado negro mate continuo */
     .keypad {
       flex: 1 1 auto;
       min-height: 0;
@@ -683,9 +677,7 @@
     }
 
     @media (hover: hover) {
-      .key:hover {
-        background: var(--key-hover);
-      }
+      .key:hover { background: var(--key-hover); }
     }
 
     .key:active, .key.pressed {
@@ -693,10 +685,7 @@
       transform: scale(0.95);
     }
 
-    .key-soft {
-      height: 38px;
-    }
-
+    .key-soft { height: 38px; }
     .soft-dash {
       width: 24px;
       height: 2.2px;
@@ -705,17 +694,10 @@
       opacity: 0.92;
     }
 
-    .key-call {
-      height: 38px;
-      color: #22c55e;
-    }
+    .key-call { height: 38px; color: #16a34a; }
+    .key-end { height: 38px; color: #dc2626; }
 
-    .key-end {
-      height: 38px;
-      color: #ef4444;
-    }
-
-    /* Cruceta cuadrada minimalista igual al video */
+    /* Cruceta cuadrada minimalista */
     .dpad {
       height: 78px;
       width: 78px;
@@ -738,17 +720,14 @@
       transition: background 0.08s ease;
     }
 
-    .dpad-btn:active {
-      background: rgba(255, 255, 255, 0.16);
-    }
-
+    .dpad-btn:active { background: rgba(255, 255, 255, 0.16); }
     .dpad-up { grid-column: 2; grid-row: 1; }
     .dpad-left { grid-column: 1; grid-row: 2; }
     .dpad-ok { grid-column: 2; grid-row: 2; border-radius: 8px; }
     .dpad-right { grid-column: 3; grid-row: 2; }
     .dpad-down { grid-column: 2; grid-row: 3; }
 
-    /* Cuadrícula T9 continua */
+    /* Cuadrícula T9 */
     .t9-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -765,23 +744,13 @@
       padding: 2px 0;
     }
 
-    .key-digit {
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 1;
-    }
-
-    .key-letters {
-      font-size: 9.5px;
-      color: var(--key-sub);
-      font-weight: 500;
-      letter-spacing: 0.02em;
-    }
+    .key-digit { font-size: 18px; font-weight: 600; line-height: 1; }
+    .key-letters { font-size: 9.5px; color: var(--key-sub); font-weight: 500; letter-spacing: 0.02em; }
   </style>
 </head>
 <body>
   <div class="stage">
-    <div class="phone" id="phoneShell" data-body="black" data-lcd="yellow">
+    <div class="phone" id="phoneShell" data-body="black" data-lcd="olive">
       <div class="brand">NOKIA</div>
 
       <div class="lcd" id="lcdScreen">
@@ -814,9 +783,9 @@
         <div class="lcd-body" id="lcdBody"></div>
 
         <div class="lcd-softkeys" id="lcdSoftkeys">
-          <span class="soft-left" id="softLeftLabel">Ir a</span>
-          <span class="soft-center" id="softCenterLabel">Menú</span>
-          <span class="soft-right" id="softRightLabel">Ajustes</span>
+          <span class="soft-left" id="softLeftLabel" style="cursor:pointer;">Ir a</span>
+          <span class="soft-center" id="softCenterLabel" style="cursor:pointer;">Menú</span>
+          <span class="soft-right" id="softRightLabel" style="cursor:pointer;">Ajustes</span>
         </div>
 
         <div class="lcd-toast" id="lcdToast"></div>
@@ -826,9 +795,10 @@
         <div class="nav-cluster">
           <div class="nav-side">
             <button class="key key-soft" data-action="soft-left" aria-label="Ir a"><span class="soft-dash"></span></button>
+            <!-- Ícono de Llamar verde curvo horizontal idéntico al video Nokia 105 -->
             <button class="key key-call" data-action="call" aria-label="Llamar">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.25 1.01l-2.2 2.2z"/>
+              <svg width="26" height="16" viewBox="0 0 28 16" fill="none">
+                <path d="M3.2 7.2C8.8 3.2 19.2 3.2 24.8 7.2C25.9 8 26.2 9.4 25.4 10.5L23.8 12.2C23.1 12.9 22 13 21.1 12.4L19.1 11.1C18.5 10.7 18.2 9.9 18.4 9.2L18.6 8.3C15.6 7.5 12.4 7.5 9.4 8.3L9.6 9.2C9.8 9.9 9.5 10.7 8.9 11.1L6.9 12.4C6 13 4.9 12.9 4.2 12.2L2.6 10.5C1.8 9.4 2.1 8 3.2 7.2Z" fill="#16a34a" transform="rotate(14 14 8)"/>
               </svg>
             </button>
           </div>
@@ -836,16 +806,19 @@
           <div class="dpad" aria-label="Cruceta de navegación">
             <button class="dpad-btn dpad-up" data-action="up" aria-label="Arriba"></button>
             <button class="dpad-btn dpad-left" data-action="left" aria-label="Izquierda"></button>
-            <button class="dpad-btn dpad-ok" data-action="ok" aria-label="Aceptar"></button>
+            <button class="dpad-btn dpad-ok" data-action="ok" aria-label="Menú / Aceptar"></button>
             <button class="dpad-btn dpad-right" data-action="right" aria-label="Derecha"></button>
             <button class="dpad-btn dpad-down" data-action="down" aria-label="Abajo"></button>
           </div>
 
           <div class="nav-side">
             <button class="key key-soft" data-action="soft-right" aria-label="Ajustes"><span class="soft-dash"></span></button>
+            <!-- Ícono de Colgar rojo curvo horizontal estilo Nokia 105 con detalle de encendido -->
             <button class="key key-end" data-action="end" aria-label="Colgar / Inicio">
-              <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.996.996 0 010-1.41C3.39 8.85 7.49 7 12 7s8.61 1.85 11.71 4.67c.39.39.39 1.02 0 1.41l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28a11.27 11.27 0 00-2.67-1.85.996.996 0 01-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/>
+              <svg width="26" height="18" viewBox="0 0 28 18" fill="none">
+                <path d="M3.2 9.2C8.8 5.2 19.2 5.2 24.8 9.2C25.9 10 26.2 11.4 25.4 12.5L23.8 14.2C23.1 14.9 22 15 21.1 14.4L19.1 13.1C18.5 12.7 18.2 11.9 18.4 11.2L18.6 10.3C15.6 9.5 12.4 9.5 9.4 10.3L9.6 11.2C9.8 11.9 9.5 12.7 8.9 13.1L6.9 14.4C6 15 4.9 14.9 4.2 14.2L2.6 12.5C1.8 11.4 2.1 10 3.2 9.2Z" fill="#dc2626"/>
+                <circle cx="14" cy="3.2" r="2.1" stroke="#dc2626" stroke-width="1.3"/>
+                <line x1="14" y1="0.8" x2="14" y2="3.1" stroke="#dc2626" stroke-width="1.4" stroke-linecap="round"/>
               </svg>
             </button>
           </div>
@@ -879,49 +852,47 @@
       ];
 
       const LCD_THEMES = [
-        { id: "yellow", name: "Amarillo Clásico" },
+        { id: "olive", name: "Verde Oliva Video" },
         { id: "green", name: "Verde 3310" },
         { id: "blue", name: "Azul Retro" },
         { id: "oled", name: "Oscuro OLED" }
       ];
 
-      const APP_PAGES = [
-        [
-          { id: "whatsapp", name: "WhatsApp", emoji: "💬", bg: "linear-gradient(135deg,#25d366,#128c7e)" },
-          { id: "tiktok", name: "TikTok", emoji: "🎵", bg: "#111827" },
-          { id: "youtube", name: "YouTube", emoji: "▶", bg: "#dc2626" },
-          { id: "instagram", name: "Instagram", emoji: "📸", bg: "linear-gradient(135deg,#f59e0b,#ec4899,#8b5cf6)" },
-          { id: "camera", name: "Cámara", emoji: "📷", bg: "#2563eb" },
-          { id: "browser", name: "Internet", emoji: "🌐", bg: "#0284c7" },
-          { id: "snake", name: "Snake", emoji: "🐍", bg: "#65a30d" },
-          { id: "calc", name: "Calculadora", emoji: "🧮", bg: "#d97706" },
-          { id: "gallery", name: "Galería", emoji: "🖼️", bg: "#db2777" },
-          { id: "music", name: "Música", emoji: "🎧", bg: "#7c3aed" },
-          { id: "clock", name: "Reloj", emoji: "⏰", bg: "#0d9488" },
-          { id: "settings", name: "Ajustes", emoji: "⚙️", bg: "#475569" }
-        ],
-        [
-          { id: "facebook", name: "Facebook", emoji: "f", bg: "#1d4ed8" },
-          { id: "maps", name: "Mapas", emoji: "📍", bg: "#16a34a" },
-          { id: "gmail", name: "Gmail", emoji: "✉️", bg: "#ef4444" },
-          { id: "drive", name: "Drive", emoji: "▲", bg: "#2563eb" },
-          { id: "calendar", name: "Calendario", emoji: "📅", bg: "#0ea5e9" },
-          { id: "notes", name: "Notas", emoji: "📝", bg: "#eab308" },
-          { id: "files", name: "Archivos", emoji: "📁", bg: "#f97316" },
-          { id: "play", name: "Play Store", emoji: "▶", bg: "#059669" },
-          { id: "weather", name: "Clima", emoji: "⛅", bg: "#38bdf8" },
-          { id: "contacts", name: "Contactos", emoji: "👤", bg: "#0284c7" },
-          { id: "radio", name: "Radio FM", emoji: "📻", bg: "#6366f1" },
-          { id: "torch", name: "Linterna", emoji: "🔦", bg: "#334155" }
-        ]
+      const SAMPLE_APPS = [
+        { id: "whatsapp", name: "WhatsApp", emoji: "💬", bg: "linear-gradient(135deg,#25d366,#128c7e)" },
+        { id: "tiktok", name: "TikTok", emoji: "🎵", bg: "#111827" },
+        { id: "youtube", name: "YouTube", emoji: "▶", bg: "#dc2626" },
+        { id: "instagram", name: "Instagram", emoji: "📸", bg: "linear-gradient(135deg,#f59e0b,#ec4899,#8b5cf6)" },
+        { id: "camera", name: "Cámara", emoji: "📷", bg: "#2563eb" },
+        { id: "browser", name: "Internet", emoji: "🌐", bg: "#0284c7" },
+        { id: "games", name: "Juegos", emoji: "🎮", bg: "#4d7c0f" },
+        { id: "calc", name: "Calculadora", emoji: "🧮", bg: "#d97706" },
+        { id: "gallery", name: "Galería", emoji: "🖼️", bg: "#db2777" },
+        { id: "music", name: "Música", emoji: "🎧", bg: "#7c3aed" },
+        { id: "clock", name: "Reloj", emoji: "⏰", bg: "#0d9488" },
+        { id: "settings", name: "Ajustes", emoji: "⚙️", bg: "#475569" }
       ];
 
       const GOTO_ITEMS = [
         { id: "browser", label: "Internet" },
         { id: "camera", label: "Cámara" },
-        { id: "snake", label: "Juego Snake Clásico" },
+        { id: "games", label: "Juegos Nokia (3)" },
         { id: "customize", label: "Personalizar Launcher" },
         { id: "exit", label: "Salir del Launcher" }
+      ];
+
+      const GAMES_LIST = [
+        { id: "snakeMenu", label: "Snake II" },
+        { id: "spaceImpact", label: "Space Impact (Avión)" },
+        { id: "bantumi", label: "Bantumi" }
+      ];
+
+      const SNAKE_MAZES = [
+        { id: "none", name: "Sin laberinto" },
+        { id: "box", name: "Caja" },
+        { id: "tunnel", name: "Túnel" },
+        { id: "mill", name: "Molino" },
+        { id: "rails", name: "Rieles" }
       ];
 
       let REAL_ANDROID_APPS = null;
@@ -939,24 +910,15 @@
 
       function getActiveAppList() {
         if (REAL_ANDROID_APPS && REAL_ANDROID_APPS.length > 0) return REAL_ANDROID_APPS;
-        return APP_PAGES.flat();
+        return SAMPLE_APPS;
       }
 
-      window.onAndroidBack = function () {
-        if (state.view === "menu") goHome(true);
-        else if (state.view !== "home") goHome(false);
-      };
-
-      window.onAndroidResume = function () {
-        loadRealAndroidApps();
-        if (state.view === "home") render();
-      };
-
       const state = {
-        view: "home",
+        view: "home", // home | dialer | calling | menu | goto | games | snakeMenu | snakeLevel | snakeMaze | snake | spaceImpact | bantumi | customize | calc | appPreview
         dialNumber: "",
         gotoIndex: 0,
-        menuPage: 0,
+        gamesIndex: 0,
+        snakeMenuIndex: 0,
         menuIndex: 0,
         menuAnimateIn: false,
         menuClosing: false,
@@ -972,35 +934,44 @@
         calcPrev: null,
         calcOp: null,
         calcReset: false,
-        snakeHigh: 0
+        snakeLevel: 6, // 1..9
+        snakeMazeIdx: 0,
+        snakeHigh: 0,
+        spaceHigh: 0
       };
 
       try {
-        const saved = JSON.parse(localStorage.getItem("nokia_1to1_es_prefs") || "{}");
+        const saved = JSON.parse(localStorage.getItem("nokia_v2_prefs") || "{}");
         if (typeof saved.bodyIdx === "number") state.bodyIdx = saved.bodyIdx % BODY_THEMES.length;
         if (typeof saved.lcdIdx === "number") state.lcdIdx = saved.lcdIdx % LCD_THEMES.length;
         if (typeof saved.soundOn === "boolean") state.soundOn = saved.soundOn;
+        if (typeof saved.use24h === "boolean") state.use24h = saved.use24h;
+        if (typeof saved.snakeLevel === "number") state.snakeLevel = Math.min(9, Math.max(1, saved.snakeLevel));
+        if (typeof saved.snakeMazeIdx === "number") state.snakeMazeIdx = saved.snakeMazeIdx % SNAKE_MAZES.length;
         if (typeof saved.snakeHigh === "number") state.snakeHigh = saved.snakeHigh;
+        if (typeof saved.spaceHigh === "number") state.spaceHigh = saved.spaceHigh;
       } catch (e) {}
 
       function savePrefs() {
         try {
-          localStorage.setItem("nokia_1to1_es_prefs", JSON.stringify({
+          localStorage.setItem("nokia_v2_prefs", JSON.stringify({
             bodyIdx: state.bodyIdx,
             lcdIdx: state.lcdIdx,
             soundOn: state.soundOn,
-            snakeHigh: state.snakeHigh
+            use24h: state.use24h,
+            snakeLevel: state.snakeLevel,
+            snakeMazeIdx: state.snakeMazeIdx,
+            snakeHigh: state.snakeHigh,
+            spaceHigh: state.spaceHigh
           }));
         } catch (e) {}
       }
 
       /* =====================================================================
-         DOS SONIDOS EXACTOS MEDIDOS DEL AUDIO DEL VIDEO DE REFERENCIA:
-         1) Teclas numéricas (0-9, *, #): Tono dual DTMF senoidal puro (~95ms)
-            medido en 1.20s, 1.60s, 2.10s, 2.66s del video (pares ITU exactos).
-         2) Teclas de navegación y menú (cruceta, Ir a, Menú, Ajustes, Colgar):
-            Bleep corto clásico Nokia a 933 Hz constante (~45ms, suave armónico
-            a 1866 Hz), medido en 4.56s, 7.56s, 8.13s, 10.55s y 11.12s.
+         TRES SONIDOS EXACTOS DEL VIDEO DE REFERENCIA:
+         1) Números (0-9, *, #): DTMF dual-tone senoidal (~95ms)
+         2) Ir a / Ajustes / navegación: mismo bleep corto Nokia (933 Hz, ~46ms)
+         3) Botón Menú (centro de la cruceta): sonido de GOTA de agua ("bloop")
       ===================================================================== */
       let audioCtx = null;
       const DTMF_FREQS = {
@@ -1020,7 +991,7 @@
         }
       }
 
-      // Sonido 1: Tono DTMF dual exacto del teclado numérico del video
+      // Sonido 1: DTMF para teclas numéricas
       function playDtmfSound(digit) {
         if (!state.soundOn) return;
         ensureAudio();
@@ -1028,7 +999,6 @@
         const pair = DTMF_FREQS[digit] || [697, 1209];
         const now = audioCtx.currentTime;
         const dur = 0.095;
-
         pair.forEach((freq) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -1045,42 +1015,103 @@
         });
       }
 
-      // Sonido 2: Bleep clásico Nokia de 933 Hz exacto del video para navegación/menú
-      function playNavBeepSound(freq = 933) {
+      // Sonido 2: Ir a / Ajustes / navegación (clic corto doble armónico 640+960 Hz medido en el video)
+      function playSoftkeySound() {
         if (!state.soundOn) return;
         ensureAudio();
         if (!audioCtx) return;
         const now = audioCtx.currentTime;
-        const dur = 0.046;
+        const dur = 0.042;
+        [640, 960].forEach((f, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = i === 0 ? "triangle" : "sine";
+          osc.frequency.setValueAtTime(f, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(i === 0 ? 0.09 : 0.055, now + 0.003);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + dur + 0.006);
+        });
+      }
 
-        const oscMain = audioCtx.createOscillator();
-        const oscHarm = audioCtx.createOscillator();
-        const gainMain = audioCtx.createGain();
-        const gainHarm = audioCtx.createGain();
+      // Sonido 3: Gota de agua ("bloop" líquido 620 Hz -> 1620 Hz medido en el video al abrir Menú)
+      function playMenuDropSound() {
+        if (!state.soundOn) return;
+        ensureAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(580, now);
+        osc.frequency.exponentialRampToValueAtTime(1640, now + 0.062);
+        filter.type = "bandpass";
+        filter.frequency.setValueAtTime(1100, now);
+        filter.Q.setValueAtTime(1.8, now);
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.16, now + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.09);
+      }
 
-        oscMain.type = "sine";
-        oscMain.frequency.setValueAtTime(freq, now);
-        oscHarm.type = "sine";
-        oscHarm.frequency.setValueAtTime(freq * 2, now);
-
-        gainMain.gain.setValueAtTime(0.001, now);
-        gainMain.gain.linearRampToValueAtTime(0.07, now + 0.004);
-        gainMain.gain.setValueAtTime(0.07, now + dur - 0.01);
-        gainMain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-
-        gainHarm.gain.setValueAtTime(0.001, now);
-        gainHarm.gain.linearRampToValueAtTime(0.014, now + 0.004);
-        gainHarm.gain.exponentialRampToValueAtTime(0.001, now + dur);
-
-        oscMain.connect(gainMain);
-        oscHarm.connect(gainHarm);
-        gainMain.connect(audioCtx.destination);
-        gainHarm.connect(audioCtx.destination);
-
-        oscMain.start(now);
-        oscHarm.start(now);
-        oscMain.stop(now + dur + 0.005);
-        oscHarm.stop(now + dur + 0.005);
+      function playRetroSfx(type) {
+        if (!state.soundOn) return;
+        ensureAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        if (type === "eat") {
+          osc.type = "square";
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.setValueAtTime(1320, now + 0.035);
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.09);
+        } else if (type === "bonus") {
+          osc.type = "square";
+          osc.frequency.setValueAtTime(1046, now);
+          osc.frequency.setValueAtTime(1318, now + 0.045);
+          osc.frequency.setValueAtTime(1568, now + 0.09);
+          gain.gain.setValueAtTime(0.055, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.17);
+        } else if (type === "shoot") {
+          osc.type = "square";
+          osc.frequency.setValueAtTime(1100, now);
+          osc.frequency.exponentialRampToValueAtTime(320, now + 0.055);
+          gain.gain.setValueAtTime(0.045, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.065);
+        } else if (type === "boom") {
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(180, now);
+          osc.frequency.exponentialRampToValueAtTime(55, now + 0.16);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.18);
+        } else if (type === "gameover") {
+          osc.type = "square";
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.setValueAtTime(370, now + 0.11);
+          osc.frequency.setValueAtTime(293, now + 0.22);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.42);
+        }
       }
 
       function vibrate(ms = 12) {
@@ -1093,7 +1124,6 @@
       }
 
       const phoneShell = document.getElementById("phoneShell");
-      const lcdStatus = document.getElementById("lcdStatus");
       const lcdBody = document.getElementById("lcdBody");
       const lcdSoftkeys = document.getElementById("lcdSoftkeys");
       const softLeftLabel = document.getElementById("softLeftLabel");
@@ -1114,13 +1144,11 @@
         phoneShell.setAttribute("data-lcd", LCD_THEMES[state.lcdIdx].id);
       }
 
-      function formatClock4Digits() {
+      function formatClockDisplay() {
         const now = new Date();
         const rawH = now.getHours();
         const m = String(now.getMinutes()).padStart(2, "0");
-        if (state.use24h) {
-          return `${String(rawH).padStart(2, "0")}:${m}`;
-        }
+        if (state.use24h) return `${String(rawH).padStart(2, "0")}:${m}`;
         const period = rawH >= 12 ? "pm" : "am";
         const h12 = rawH % 12 || 12;
         return `${String(h12).padStart(2, "0")}:${m} ${period}`;
@@ -1140,129 +1168,689 @@
         lcdSoftkeys.classList.toggle("hidden", hideBar);
       }
 
-      // Snake
+      /* =====================================================================
+         JUEGO 1: SNAKE II COMPLETO (NOKIA 3310)
+         - Niveles 1 al 9 (velocidad real del Nokia 3310)
+         - 5 Laberintos (Sin laberinto, Caja, Túnel, Molino, Rieles)
+         - Bicho bonus cada 5 comidas con barra de tiempo
+         - Cola de giros (input queue) para que nunca se trabe al girar rápido
+      ===================================================================== */
       const snake = {
         timer: null,
-        cols: 20,
-        rows: 13,
+        cols: 22,
+        rows: 14,
         body: [],
+        walls: [],
         dir: { x: 1, y: 0 },
-        nextDir: { x: 1, y: 0 },
-        food: { x: 12, y: 6 },
+        dirQueue: [],
+        food: { x: 14, y: 7 },
+        bonus: null,
+        bonusTicks: 0,
+        eatenCount: 0,
         score: 0,
         running: false,
         gameOver: false
       };
 
-      function stopSnake() {
-        if (snake.timer) {
-          clearInterval(snake.timer);
-          snake.timer = null;
+      function buildMazeWalls(mazeId) {
+        const w = [];
+        const C = snake.cols, R = snake.rows;
+        if (mazeId === "box") {
+          for (let x = 0; x < C; x++) { w.push({ x, y: 0 }); w.push({ x, y: R - 1 }); }
+          for (let y = 1; y < R - 1; y++) { w.push({ x: 0, y }); w.push({ x: C - 1, y }); }
+        } else if (mazeId === "tunnel") {
+          for (let x = 0; x < 7; x++) { w.push({ x, y: 0 }); w.push({ x: C - 1 - x, y: 0 }); w.push({ x, y: R - 1 }); w.push({ x: C - 1 - x, y: R - 1 }); }
+          for (let x = 6; x < C - 6; x++) { w.push({ x, y: 4 }); w.push({ x, y: R - 5 }); }
+        } else if (mazeId === "mill") {
+          for (let y = 2; y < 8; y++) w.push({ x: 6, y });
+          for (let y = 6; y < R - 2; y++) w.push({ x: C - 7, y });
+          for (let x = 10; x < C - 3; x++) w.push({ x, y: 3 });
+          for (let x = 3; x < 12; x++) w.push({ x, y: R - 4 });
+        } else if (mazeId === "rails") {
+          for (let x = 0; x < C; x++) { w.push({ x, y: 0 }); w.push({ x, y: R - 1 }); }
+          for (let x = 4; x < C - 4; x++) { w.push({ x, y: 5 }); w.push({ x, y: R - 6 }); }
         }
-        snake.running = false;
+        return w;
       }
 
-      function startSnake() {
-        stopSnake();
-        snake.body = [{ x: 6, y: 6 }, { x: 5, y: 6 }, { x: 4, y: 6 }];
+      function stopAllGames() {
+        if (snake.timer) { clearInterval(snake.timer); snake.timer = null; }
+        snake.running = false;
+        if (space.timer) { clearInterval(space.timer); space.timer = null; }
+        space.running = false;
+      }
+
+      function isSnakeCellOccupied(x, y) {
+        return snake.body.some((s) => s.x === x && s.y === y) ||
+               snake.walls.some((w) => w.x === x && w.y === y) ||
+               (snake.bonus && snake.bonus.x === x && snake.bonus.y === y);
+      }
+
+      function spawnSnakeFood() {
+        for (let t = 0; t < 300; t++) {
+          const x = Math.floor(Math.random() * snake.cols);
+          const y = Math.floor(Math.random() * snake.rows);
+          if (!isSnakeCellOccupied(x, y)) {
+            snake.food = { x, y };
+            return;
+          }
+        }
+      }
+
+      function spawnSnakeBonus() {
+        for (let t = 0; t < 300; t++) {
+          const x = Math.floor(Math.random() * snake.cols);
+          const y = Math.floor(Math.random() * snake.rows);
+          if (!isSnakeCellOccupied(x, y) && (x !== snake.food.x || y !== snake.food.y)) {
+            snake.bonus = { x, y };
+            snake.bonusTicks = 28;
+            return;
+          }
+        }
+      }
+
+      function startSnakeGame() {
+        stopAllGames();
+        const mazeId = SNAKE_MAZES[state.snakeMazeIdx].id;
+        snake.walls = buildMazeWalls(mazeId);
+        snake.body = [{ x: 8, y: 7 }, { x: 7, y: 7 }, { x: 6, y: 7 }, { x: 5, y: 7 }];
         snake.dir = { x: 1, y: 0 };
-        snake.nextDir = { x: 1, y: 0 };
+        snake.dirQueue = [];
+        snake.bonus = null;
+        snake.bonusTicks = 0;
+        snake.eatenCount = 0;
         snake.score = 0;
         snake.gameOver = false;
         snake.running = true;
-        spawnFood();
+        spawnSnakeFood();
+        state.view = "snake";
         render();
-        snake.timer = setInterval(tickSnake, 145);
+        const speedMs = Math.max(55, 210 - (state.snakeLevel - 1) * 18);
+        snake.timer = setInterval(tickSnake, speedMs);
       }
 
-      function spawnFood() {
-        let tries = 0;
-        while (tries < 200) {
-          const fx = Math.floor(Math.random() * snake.cols);
-          const fy = Math.floor(Math.random() * snake.rows);
-          if (!snake.body.some((s) => s.x === fx && s.y === fy)) {
-            snake.food = { x: fx, y: fy };
-            return;
-          }
-          tries++;
-        }
+      function queueSnakeDir(nx, ny) {
+        const last = snake.dirQueue.length > 0 ? snake.dirQueue[snake.dirQueue.length - 1] : snake.dir;
+        if (last.x + nx === 0 && last.y + ny === 0) return;
+        if (last.x === nx && last.y === ny) return;
+        if (snake.dirQueue.length < 2) snake.dirQueue.push({ x: nx, y: ny });
       }
 
       function tickSnake() {
         if (!snake.running || state.view !== "snake") return;
-        snake.dir = snake.nextDir;
+        if (snake.dirQueue.length > 0) snake.dir = snake.dirQueue.shift();
         const head = {
           x: (snake.body[0].x + snake.dir.x + snake.cols) % snake.cols,
           y: (snake.body[0].y + snake.dir.y + snake.rows) % snake.rows
         };
-        if (snake.body.some((seg) => seg.x === head.x && seg.y === head.y)) {
+
+        const hitWall = snake.walls.some((w) => w.x === head.x && w.y === head.y);
+        const hitSelf = snake.body.slice(0, -1).some((s) => s.x === head.x && s.y === head.y);
+        if (hitWall || hitSelf) {
           snake.gameOver = true;
           snake.running = false;
           clearInterval(snake.timer);
           snake.timer = null;
-          playNavBeepSound(340);
+          playRetroSfx("gameover");
           render();
           return;
         }
+
         snake.body.unshift(head);
+
+        let grew = false;
         if (head.x === snake.food.x && head.y === snake.food.y) {
-          snake.score += 10;
-          if (snake.score > state.snakeHigh) {
-            state.snakeHigh = snake.score;
-            savePrefs();
-          }
-          playNavBeepSound(1244);
-          spawnFood();
-          const scoreEl = document.getElementById("snakeScoreVal");
-          const highEl = document.getElementById("snakeHighVal");
-          if (scoreEl) scoreEl.textContent = snake.score;
-          if (highEl) highEl.textContent = state.snakeHigh;
-        } else {
-          snake.body.pop();
+          grew = true;
+          snake.eatenCount++;
+          snake.score += state.snakeLevel;
+          playRetroSfx("eat");
+          spawnSnakeFood();
+          if (snake.eatenCount % 5 === 0) spawnSnakeBonus();
+        } else if (snake.bonus && head.x === snake.bonus.x && head.y === snake.bonus.y) {
+          grew = true;
+          snake.score += state.snakeLevel * 5 + snake.bonusTicks;
+          snake.bonus = null;
+          snake.bonusTicks = 0;
+          playRetroSfx("bonus");
         }
+
+        if (!grew) snake.body.pop();
+
+        if (snake.bonus) {
+          snake.bonusTicks--;
+          if (snake.bonusTicks <= 0) snake.bonus = null;
+        }
+
+        if (snake.score > state.snakeHigh) {
+          state.snakeHigh = snake.score;
+          savePrefs();
+        }
+
+        const scEl = document.getElementById("snakeScoreHud");
+        const bnEl = document.getElementById("snakeBonusHud");
+        if (scEl) scEl.textContent = String(snake.score).padStart(4, "0");
+        if (bnEl) bnEl.textContent = snake.bonus ? `★ ${snake.bonusTicks}` : `Nv.${state.snakeLevel}`;
         drawSnake();
       }
+
+      // Helper 1-bit pixel sprite renderer (84x48 auténtico Nokia 3310)
+      function drawBitmap(ctx, rows, x, y, ink) {
+        ctx.fillStyle = ink;
+        for (let r = 0; r < rows.length; r++) {
+          const row = rows[r];
+          for (let c = 0; c < row.length; c++) {
+            if (row[c] === "1") ctx.fillRect(Math.floor(x + c), Math.floor(y + r), 1, 1);
+          }
+        }
+      }
+
+      const SPRITE_SNAKE_FOOD = [
+        "010",
+        "101",
+        "010"
+      ];
+      const SPRITE_SNAKE_BUG = [
+        "10101",
+        "01110",
+        "11011",
+        "01110"
+      ];
 
       function drawSnake() {
         const canvas = document.getElementById("snakeCanvas");
         if (!canvas) return;
-        const rect = canvas.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) return;
-        canvas.width = Math.floor(rect.width);
-        canvas.height = Math.floor(rect.height);
+        // Resolución real Nokia 3310: 88x56 (22x14 celdas de 4x4 px)
+        canvas.width = snake.cols * 4;
+        canvas.height = snake.rows * 4;
         const ctx = canvas.getContext("2d");
-        const styles = getComputedStyle(phoneShell);
-        const bg = styles.getPropertyValue("--lcd-bg-dark").trim() || "#a39720";
-        const ink = styles.getPropertyValue("--lcd-ink").trim() || "#11110d";
+        const st = getComputedStyle(phoneShell);
+        const bg = st.getPropertyValue("--lcd-bg").trim() || "#9b9236";
+        const ink = st.getPropertyValue("--lcd-ink").trim() || "#11120c";
 
         ctx.fillStyle = bg;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const cw = canvas.width / snake.cols;
-        const ch = canvas.height / snake.rows;
-
-        ctx.fillStyle = ink;
-        ctx.beginPath();
-        ctx.arc(snake.food.x * cw + cw / 2, snake.food.y * ch + ch / 2, Math.min(cw, ch) * 0.34, 0, Math.PI * 2);
-        ctx.fill();
-
-        snake.body.forEach((seg, idx) => {
+        // Laberinto con patrón de ladrillo pixelado Nokia II
+        snake.walls.forEach((w) => {
+          const wx = w.x * 4, wy = w.y * 4;
           ctx.fillStyle = ink;
-          const pad = idx === 0 ? 0.5 : 1.3;
-          ctx.fillRect(seg.x * cw + pad, seg.y * ch + pad, Math.max(2, cw - pad * 2), Math.max(2, ch - pad * 2));
+          ctx.fillRect(wx, wy, 4, 4);
+          ctx.fillStyle = bg;
+          ctx.fillRect(wx + 1, wy + 1, 1, 1);
+        });
+
+        // Comida diamante hueco 3x3 exacto de Snake II
+        drawBitmap(ctx, SPRITE_SNAKE_FOOD, snake.food.x * 4 + 0.5, snake.food.y * 4 + 0.5, ink);
+
+        // Bicho bonus 5x4 pixel-art (araña/escarabajo)
+        if (snake.bonus) {
+          drawBitmap(ctx, SPRITE_SNAKE_BUG, snake.bonus.x * 4, snake.bonus.y * 4, ink);
+        }
+
+        // Serpiente Nokia II con escamas, boca abierta al acercarse y cola afilada
+        const head = snake.body[0];
+        const nearFood = Math.abs(head.x - snake.food.x) + Math.abs(head.y - snake.food.y) <= 2;
+
+        snake.body.forEach((seg, i) => {
+          const sx = seg.x * 4, sy = seg.y * 4;
+          ctx.fillStyle = ink;
+          if (i === 0) {
+            // Cabeza con ojo y boca abierta cerca de la comida
+            ctx.fillRect(sx, sy, 4, 4);
+            ctx.fillStyle = bg;
+            ctx.fillRect(sx + 1, sy + 1, 1, 1);
+            if (nearFood) {
+              if (snake.dir.x > 0) ctx.fillRect(sx + 3, sy + 1, 1, 2);
+              else if (snake.dir.x < 0) ctx.fillRect(sx, sy + 1, 1, 2);
+              else if (snake.dir.y > 0) ctx.fillRect(sx + 1, sy + 3, 2, 1);
+              else ctx.fillRect(sx + 1, sy, 2, 1);
+            }
+          } else if (i === snake.body.length - 1) {
+            // Cola afilada
+            ctx.fillRect(sx + 1, sy + 1, 2, 2);
+          } else {
+            // Escamas clásicas Snake II (segmentos alternos con punto interior)
+            ctx.fillRect(sx, sy, 4, 4);
+            ctx.fillStyle = bg;
+            if (i % 2 === 0) {
+              ctx.fillRect(sx + 1, sy + 1, 1, 1);
+              ctx.fillRect(sx + 2, sy + 2, 1, 1);
+            } else {
+              ctx.fillRect(sx + 2, sy + 1, 1, 1);
+              ctx.fillRect(sx + 1, sy + 2, 1, 1);
+            }
+          }
         });
       }
 
-      function stopCall() {
-        if (state.callTimer) {
-          clearInterval(state.callTimer);
-          state.callTimer = null;
+      /* =====================================================================
+         JUEGO 2: SPACE IMPACT (EL DEL AVIÓN DE NOKIA 3310)
+         - Nave del jugador a la izquierda, dispara láser y misiles especiales
+         - Oleadas de enemigos, disparos enemigos, corazones (3 vidas), jefes
+         - Niveles progresivos y récord guardado
+      ===================================================================== */
+      const space = {
+        timer: null,
+        w: 120,
+        h: 72,
+        player: { x: 8, y: 32, hp: 3, specials: 3, invul: 0 },
+        bullets: [],
+        ebullets: [],
+        enemies: [],
+        pickups: [],
+        boss: null,
+        stage: 1,
+        score: 0,
+        tick: 0,
+        running: false,
+        gameOver: false
+      };
+
+      function startSpaceImpact() {
+        stopAllGames();
+        space.player = { x: 8, y: 32, hp: 3, specials: 3, invul: 0 };
+        space.bullets = [];
+        space.ebullets = [];
+        space.enemies = [];
+        space.pickups = [];
+        space.boss = null;
+        space.stage = 1;
+        space.score = 0;
+        space.tick = 0;
+        space.running = true;
+        space.gameOver = false;
+        state.view = "spaceImpact";
+        render();
+        space.timer = setInterval(tickSpace, 55);
+      }
+
+      function spaceShoot() {
+        if (!space.running) return;
+        space.bullets.push({ x: space.player.x + 11, y: space.player.y + 3, special: false });
+        playRetroSfx("shoot");
+      }
+
+      function spaceSpecial() {
+        if (!space.running || space.player.specials <= 0) return;
+        space.player.specials--;
+        for (let dy = -6; dy <= 6; dy += 6) {
+          space.bullets.push({ x: space.player.x + 11, y: space.player.y + 3 + dy, special: true });
         }
+        playRetroSfx("bonus");
+      }
+
+      function tickSpace() {
+        if (!space.running || state.view !== "spaceImpact") return;
+        space.tick++;
+        if (space.player.invul > 0) space.player.invul--;
+
+        // Auto-disparo suave cada 8 ticks para comodidad en pantalla táctil
+        if (space.tick % 9 === 0) {
+          space.bullets.push({ x: space.player.x + 11, y: space.player.y + 3, special: false });
+        }
+
+        // Generar oleadas o Jefe
+        if (!space.boss) {
+          if (space.tick > 0 && space.tick % 240 === 0) {
+            space.boss = {
+              x: space.w - 22,
+              y: 22,
+              vy: 1.2 + space.stage * 0.25,
+              hp: 14 + space.stage * 8,
+              maxHp: 14 + space.stage * 8
+            };
+          } else if (space.tick % Math.max(14, 28 - space.stage * 2) === 0) {
+            const type = Math.random() < 0.35 ? "sine" : (Math.random() < 0.5 ? "shooter" : "fighter");
+            space.enemies.push({
+              x: space.w + 4,
+              y: 8 + Math.random() * (space.h - 20),
+              baseY: 0,
+              vx: 1.8 + space.stage * 0.25,
+              type,
+              hp: type === "shooter" ? 2 : 1,
+              phase: Math.random() * 6
+            });
+            space.enemies[space.enemies.length - 1].baseY = space.enemies[space.enemies.length - 1].y;
+          }
+        }
+
+        // Mover balas jugador
+        space.bullets.forEach((b) => { b.x += b.special ? 4.8 : 4.0; });
+        space.bullets = space.bullets.filter((b) => b.x < space.w + 6);
+
+        // Mover balas enemigas
+        space.ebullets.forEach((b) => { b.x -= 2.8; });
+        space.ebullets = space.ebullets.filter((b) => b.x > -4);
+
+        // Mover enemigos
+        space.enemies.forEach((e) => {
+          e.x -= e.vx;
+          if (e.type === "sine") {
+            e.y = Math.max(4, Math.min(space.h - 12, e.baseY + Math.sin(space.tick * 0.14 + e.phase) * 12));
+          }
+          if (e.type === "shooter" && Math.random() < 0.025) {
+            space.ebullets.push({ x: e.x - 2, y: e.y + 3 });
+          }
+        });
+        space.enemies = space.enemies.filter((e) => e.x > -14);
+
+        // Mover jefe
+        if (space.boss) {
+          space.boss.y += space.boss.vy;
+          if (space.boss.y < 6 || space.boss.y > space.h - 24) space.boss.vy *= -1;
+          if (space.tick % Math.max(14, 26 - space.stage * 2) === 0) {
+            space.ebullets.push({ x: space.boss.x - 2, y: space.boss.y + 4 });
+            space.ebullets.push({ x: space.boss.x - 2, y: space.boss.y + 14 });
+          }
+        }
+
+        // Mover pickups
+        space.pickups.forEach((p) => { p.x -= 1.5; });
+        space.pickups = space.pickups.filter((p) => p.x > -8);
+
+        // Colisiones balas jugador -> enemigos / jefe
+        space.bullets.forEach((b) => {
+          space.enemies.forEach((e) => {
+            if (e.hp > 0 && b.x >= e.x - 2 && b.x <= e.x + 10 && b.y >= e.y - 2 && b.y <= e.y + 8) {
+              e.hp -= b.special ? 3 : 1;
+              b.x = 999;
+              if (e.hp <= 0) {
+                space.score += 20;
+                playRetroSfx("boom");
+                if (Math.random() < 0.14) {
+                  space.pickups.push({ x: e.x, y: e.y, kind: Math.random() < 0.5 ? "life" : "spec" });
+                }
+              }
+            }
+          });
+          if (space.boss && b.x >= space.boss.x && b.x <= space.boss.x + 18 && b.y >= space.boss.y && b.y <= space.boss.y + 18) {
+            space.boss.hp -= b.special ? 3 : 1;
+            b.x = 999;
+            if (space.boss.hp <= 0) {
+              space.score += 250 * space.stage;
+              space.stage++;
+              space.boss = null;
+              space.player.specials = Math.min(5, space.player.specials + 1);
+              playRetroSfx("bonus");
+              showToast(`¡Nivel ${space.stage}!`);
+            }
+          }
+        });
+        space.enemies = space.enemies.filter((e) => e.hp > 0);
+        space.bullets = space.bullets.filter((b) => b.x < 900);
+
+        // Colisiones pickups
+        space.pickups.forEach((p) => {
+          if (Math.abs(p.x - space.player.x) < 10 && Math.abs(p.y - space.player.y) < 10) {
+            if (p.kind === "life") space.player.hp = Math.min(5, space.player.hp + 1);
+            else space.player.specials = Math.min(5, space.player.specials + 1);
+            p.x = -99;
+            playRetroSfx("eat");
+          }
+        });
+
+        // Daño al jugador
+        if (space.player.invul === 0) {
+          let hit = false;
+          space.enemies.forEach((e) => {
+            if (Math.abs(e.x - space.player.x) < 9 && Math.abs(e.y - space.player.y) < 7) {
+              e.hp = 0; hit = true;
+            }
+          });
+          space.ebullets.forEach((eb) => {
+            if (eb.x >= space.player.x && eb.x <= space.player.x + 10 && eb.y >= space.player.y && eb.y <= space.player.y + 7) {
+              eb.x = -99; hit = true;
+            }
+          });
+          if (hit) {
+            space.player.hp--;
+            space.player.invul = 25;
+            playRetroSfx("boom");
+            if (space.player.hp <= 0) {
+              space.gameOver = true;
+              space.running = false;
+              clearInterval(space.timer);
+              space.timer = null;
+              playRetroSfx("gameover");
+              render();
+              return;
+            }
+          }
+        }
+
+        if (space.score > state.spaceHigh) {
+          state.spaceHigh = space.score;
+          savePrefs();
+        }
+
+        const hudL = document.getElementById("spaceHudLeft");
+        const hudR = document.getElementById("spaceHudRight");
+        if (hudL) hudL.textContent = "♥".repeat(Math.max(0, space.player.hp)) + " ★" + space.player.specials;
+        if (hudR) hudR.textContent = `N${space.stage} ${String(space.score).padStart(5, "0")}`;
+        drawSpace();
+      }
+
+      // Sprites 1-bit pixel-art auténticos de Space Impact (Nokia 3310 84x48)
+      const SI_PLAYER = [
+        "1100000000",
+        "0111000000",
+        "0011111000",
+        "0110111111",
+        "0011111000",
+        "0111000000",
+        "1100000000"
+      ];
+      const SI_ENEMY_FIGHTER = [
+        "0001110",
+        "0111101",
+        "1101110",
+        "0111101",
+        "0001110"
+      ];
+      const SI_ENEMY_JELLY = [
+        "0011100",
+        "0110110",
+        "1111111",
+        "1010101",
+        "0101010"
+      ];
+      const SI_ENEMY_SHOOTER = [
+        "00111100",
+        "01100110",
+        "11111111",
+        "01100110",
+        "00111100"
+      ];
+      const SI_BOSS = [
+        "00001111110000",
+        "00111111111100",
+        "01100111100110",
+        "11100111100111",
+        "11111111111111",
+        "01111000011110",
+        "00110111101100",
+        "01100100100110",
+        "11000000000011",
+        "01100111100110",
+        "00111111111100",
+        "00001111110000"
+      ];
+      const SI_PICKUP = [
+        "01110",
+        "10101",
+        "11111",
+        "10101",
+        "01110"
+      ];
+
+      function drawSpace() {
+        const canvas = document.getElementById("spaceCanvas");
+        if (!canvas) return;
+        // Resolución real Nokia 3310: 84x48 píxeles monocromáticos
+        canvas.width = 84;
+        canvas.height = 48;
+        const ctx = canvas.getContext("2d");
+        const st = getComputedStyle(phoneShell);
+        const bg = st.getPropertyValue("--lcd-bg").trim() || "#9b9236";
+        const ink = st.getPropertyValue("--lcd-ink").trim() || "#11120c";
+
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, 84, 48);
+
+        const sx = 84 / space.w;
+        const sy = 48 / space.h;
+
+        ctx.fillStyle = ink;
+        // Escenario desplazándose según nivel (estrellas en nivel 1, terreno planetario en pares, cuevas en nivel 3+)
+        if (space.stage % 3 === 1) {
+          for (let i = 0; i < 8; i++) {
+            const starX = (84 - ((space.tick * (1 + (i % 2)) + i * 17) % 84));
+            const starY = (i * 7 + 3) % 44;
+            ctx.fillRect(Math.floor(starX), starY, 1, 1);
+          }
+        } else {
+          for (let x = 0; x < 84; x++) {
+            const h = 3 + Math.floor(Math.sin((x + space.tick) * 0.18) * 2.5 + 2);
+            ctx.fillRect(x, 48 - h, 1, h);
+            if (space.stage % 3 === 0) {
+              const th = 2 + Math.floor(Math.cos((x + space.tick) * 0.15) * 2 + 1.5);
+              ctx.fillRect(x, 0, 1, th);
+            }
+          }
+        }
+
+        // Nave jugador (sprite Nokia 3310 10x7)
+        if (space.player.invul % 4 < 2) {
+          drawBitmap(ctx, SI_PLAYER, space.player.x * sx, space.player.y * sy, ink);
+        }
+
+        // Balas jugador (láser y misiles especiales)
+        space.bullets.forEach((b) => {
+          ctx.fillStyle = ink;
+          if (b.special) {
+            ctx.fillRect(Math.floor(b.x * sx), Math.floor(b.y * sy), 5, 2);
+          } else {
+            ctx.fillRect(Math.floor(b.x * sx), Math.floor(b.y * sy), 3, 1);
+          }
+        });
+
+        // Balas enemigas
+        space.ebullets.forEach((b) => {
+          ctx.fillStyle = ink;
+          ctx.fillRect(Math.floor(b.x * sx), Math.floor(b.y * sy), 2, 2);
+        });
+
+        // Enemigos con sprites clásicos distintos
+        space.enemies.forEach((e) => {
+          const spr = e.type === "sine" ? SI_ENEMY_JELLY : (e.type === "shooter" ? SI_ENEMY_SHOOTER : SI_ENEMY_FIGHTER);
+          drawBitmap(ctx, spr, e.x * sx, e.y * sy, ink);
+        });
+
+        // Jefe pixel-art 14x12 con barra de vida
+        if (space.boss) {
+          drawBitmap(ctx, SI_BOSS, space.boss.x * sx, space.boss.y * sy, ink);
+          const pct = Math.max(0, space.boss.hp / space.boss.maxHp);
+          ctx.fillStyle = ink;
+          ctx.fillRect(22, 1, Math.floor(40 * pct), 2);
+        }
+
+        // Pickups pixel-art
+        space.pickups.forEach((p) => {
+          drawBitmap(ctx, SI_PICKUP, p.x * sx, p.y * sy, ink);
+        });
+      }
+
+      /* =====================================================================
+         JUEGO 3: BANTUMI (CLÁSICO NOKIA 3310)
+      ===================================================================== */
+      const bantumi = {
+        pits: [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0], // 0-5 jugador, 6 banco jugador, 7-12 CPU, 13 banco CPU
+        cursor: 0,
+        turn: "player",
+        msg: "Tu turno",
+        over: false
+      };
+
+      function startBantumi() {
+        stopAllGames();
+        bantumi.pits = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
+        bantumi.cursor = 0;
+        bantumi.turn = "player";
+        bantumi.msg = "Tu turno";
+        bantumi.over = false;
+        state.view = "bantumi";
+        render();
+      }
+
+      function sowBantumi(idx, isPlayer) {
+        let seeds = bantumi.pits[idx];
+        if (seeds <= 0) return false;
+        bantumi.pits[idx] = 0;
+        let cur = idx;
+        while (seeds > 0) {
+          cur = (cur + 1) % 14;
+          if (isPlayer && cur === 13) continue;
+          if (!isPlayer && cur === 6) continue;
+          bantumi.pits[cur]++;
+          seeds--;
+        }
+        // Captura si cae en hoyo propio vacío
+        if (isPlayer && cur >= 0 && cur <= 5 && bantumi.pits[cur] === 1) {
+          const opp = 12 - cur;
+          if (bantumi.pits[opp] > 0) {
+            bantumi.pits[6] += bantumi.pits[opp] + 1;
+            bantumi.pits[opp] = 0;
+            bantumi.pits[cur] = 0;
+            playRetroSfx("bonus");
+          }
+        }
+        // Revisar fin de partida
+        const pSum = bantumi.pits.slice(0, 6).reduce((a, b) => a + b, 0);
+        const cSum = bantumi.pits.slice(7, 13).reduce((a, b) => a + b, 0);
+        if (pSum === 0 || cSum === 0) {
+          bantumi.pits[6] += pSum;
+          bantumi.pits[13] += cSum;
+          for (let i = 0; i < 6; i++) { bantumi.pits[i] = 0; bantumi.pits[7 + i] = 0; }
+          bantumi.over = true;
+          bantumi.msg = bantumi.pits[6] >= bantumi.pits[13] ? "¡Ganaste!" : "Ganó CPU";
+          playRetroSfx("bonus");
+          render();
+          return true;
+        }
+        const extraTurn = (isPlayer && cur === 6) || (!isPlayer && cur === 13);
+        if (!extraTurn) {
+          bantumi.turn = isPlayer ? "cpu" : "player";
+          bantumi.msg = bantumi.turn === "player" ? "Tu turno" : "Turno CPU...";
+        } else {
+          bantumi.msg = isPlayer ? "¡Turno extra!" : "CPU repite";
+        }
+        render();
+        if (bantumi.turn === "cpu" && !bantumi.over) {
+          setTimeout(cpuBantumiTurn, 650);
+        }
+        return true;
+      }
+
+      function cpuBantumiTurn() {
+        if (state.view !== "bantumi" || bantumi.over || bantumi.turn !== "cpu") return;
+        const choices = [];
+        for (let i = 7; i <= 12; i++) if (bantumi.pits[i] > 0) choices.push(i);
+        if (choices.length === 0) return;
+        const pick = choices[Math.floor(Math.random() * choices.length)];
+        playSoftkeySound(780);
+        sowBantumi(pick, false);
+      }
+
+      /* =====================================================================
+         NAVEGACIÓN GENERAL Y RENDER
+      ===================================================================== */
+      function stopCall() {
+        if (state.callTimer) { clearInterval(state.callTimer); state.callTimer = null; }
         state.callSeconds = 0;
       }
 
       function goHome(animateMenuExit = false) {
-        stopSnake();
+        stopAllGames();
         stopCall();
         if (animateMenuExit && state.view === "menu" && !state.menuClosing) {
           const overlay = document.getElementById("menuOverlay");
@@ -1287,37 +1875,35 @@
         render();
       }
 
+      window.onAndroidBack = function () {
+        if (state.view === "menu") goHome(true);
+        else if (state.view === "snake" || state.view === "snakeLevel" || state.view === "snakeMaze") { stopAllGames(); state.view = "snakeMenu"; render(); }
+        else if (state.view === "snakeMenu" || state.view === "spaceImpact" || state.view === "bantumi") { stopAllGames(); state.view = "games"; render(); }
+        else if (state.view !== "home") goHome(false);
+      };
+
+      window.onAndroidResume = function () {
+        loadRealAndroidApps();
+        if (state.view === "home") render();
+      };
+
       function openApp(appId) {
-        stopSnake();
-        if (appId === "snake") {
-          state.view = "snake";
-          startSnake();
-          return;
-        }
-        if (appId === "settings" || appId === "customize") {
-          state.view = "customize";
-          state.customizeIndex = 0;
-          render();
-          return;
-        }
+        stopAllGames();
+        if (appId === "games") { state.view = "games"; state.gamesIndex = 0; render(); return; }
+        if (appId === "snakeMenu") { state.view = "snakeMenu"; state.snakeMenuIndex = 0; render(); return; }
+        if (appId === "spaceImpact") { startSpaceImpact(); return; }
+        if (appId === "bantumi") { startBantumi(); return; }
+        if (appId === "settings" || appId === "customize") { state.view = "customize"; state.customizeIndex = 0; render(); return; }
         if (appId === "calc") {
-          state.view = "calc";
-          state.calcValue = "0";
-          state.calcPrev = null;
-          state.calcOp = null;
-          state.calcReset = false;
-          render();
-          return;
+          state.view = "calc"; state.calcValue = "0"; state.calcPrev = null; state.calcOp = null; state.calcReset = false;
+          render(); return;
         }
         if (window.AndroidLauncher) {
           if (appId === "camera") { window.AndroidLauncher.openCamera(); return; }
           if (appId === "browser") { window.AndroidLauncher.openBrowser(); return; }
           const realList = getActiveAppList();
           const realApp = realList.find((a) => a.pkg === appId || a.id === appId);
-          if (realApp && realApp.pkg) {
-            window.AndroidLauncher.launchApp(realApp.pkg);
-            return;
-          }
+          if (realApp && realApp.pkg) { window.AndroidLauncher.launchApp(realApp.pkg); return; }
         }
         const allApps = getActiveAppList();
         const found = allApps.find((a) => a.id === appId) || { id: appId, name: appId, emoji: "📱", bg: "#2563eb" };
@@ -1328,25 +1914,14 @@
 
       function handleCalcDigit(d) {
         if (d === "*" || d === "#") return;
-        if (state.calcReset || state.calcValue === "0") {
-          state.calcValue = d;
-          state.calcReset = false;
-        } else if (state.calcValue.length < 10) {
-          state.calcValue += d;
-        }
+        if (state.calcReset || state.calcValue === "0") { state.calcValue = d; state.calcReset = false; }
+        else if (state.calcValue.length < 10) state.calcValue += d;
         render();
       }
 
       function handleCalcOp(op) {
         const current = parseFloat(state.calcValue) || 0;
-        if (op === "C") {
-          state.calcValue = "0";
-          state.calcPrev = null;
-          state.calcOp = null;
-          state.calcReset = false;
-          render();
-          return;
-        }
+        if (op === "C") { state.calcValue = "0"; state.calcPrev = null; state.calcOp = null; state.calcReset = false; render(); return; }
         if (op === "=") {
           if (state.calcPrev !== null && state.calcOp) {
             let res = current;
@@ -1355,17 +1930,11 @@
             if (state.calcOp === "×") res = state.calcPrev * current;
             if (state.calcOp === "÷") res = current === 0 ? 0 : state.calcPrev / current;
             state.calcValue = String(Number(res.toFixed(4)));
-            state.calcPrev = null;
-            state.calcOp = null;
-            state.calcReset = true;
+            state.calcPrev = null; state.calcOp = null; state.calcReset = true;
           }
-          render();
-          return;
+          render(); return;
         }
-        state.calcPrev = current;
-        state.calcOp = op;
-        state.calcReset = true;
-        render();
+        state.calcPrev = current; state.calcOp = op; state.calcReset = true; render();
       }
 
       function getCustomizeRows() {
@@ -1373,26 +1942,21 @@
           { id: "body", label: "Color del teléfono", value: BODY_THEMES[state.bodyIdx].name },
           { id: "lcd", label: "Tema de pantalla", value: LCD_THEMES[state.lcdIdx].name },
           { id: "sound", label: "Sonido de teclas", value: state.soundOn ? "Sí" : "No" },
-          { id: "clock", label: "Formato de hora", value: state.use24h ? "24h" : "12h" }
+          { id: "clock", label: "Formato de hora", value: state.use24h ? "24h" : "12h am/pm" }
         ];
       }
 
       function toggleCustomizeRow(idx) {
-        const rows = getCustomizeRows();
-        const row = rows[idx];
+        const row = getCustomizeRows()[idx];
         if (!row) return;
         if (row.id === "body") state.bodyIdx = (state.bodyIdx + 1) % BODY_THEMES.length;
         else if (row.id === "lcd") state.lcdIdx = (state.lcdIdx + 1) % LCD_THEMES.length;
         else if (row.id === "sound") state.soundOn = !state.soundOn;
         else if (row.id === "clock") state.use24h = !state.use24h;
-        savePrefs();
-        applyThemes();
-        render();
+        savePrefs(); applyThemes(); render();
       }
 
       function render() {
-        lcdStatus.classList.toggle("dark-status", false);
-
         if (state.view === "home") {
           setSoftkeys("Ir a", "Menú", "Ajustes", false);
           lcdBody.innerHTML = `
@@ -1400,7 +1964,7 @@
               <div class="home-date">${formatDate()}</div>
               <div class="home-clock-strip">
                 <div class="home-line"></div>
-                <div class="home-clock-ribbon">${formatClock4Digits()}</div>
+                <div class="home-clock-ribbon">${formatClockDisplay()}</div>
               </div>
             </div>
           `;
@@ -1409,11 +1973,7 @@
 
         if (state.view === "dialer") {
           setSoftkeys("", "Guardar", "Borrar", false);
-          lcdBody.innerHTML = `
-            <div class="dialer-view">
-              <div class="dialer-number">${state.dialNumber}</div>
-            </div>
-          `;
+          lcdBody.innerHTML = `<div class="dialer-view"><div class="dialer-number">${state.dialNumber}</div></div>`;
           return;
         }
 
@@ -1433,16 +1993,15 @@
         }
 
         if (state.view === "goto") {
-          setSoftkeys("", "", "Salir", false);
-          const htmlItems = GOTO_ITEMS.map((item, idx) => `
-            <div class="list-item ${idx === state.gotoIndex ? "selected" : ""}" data-goto-idx="${idx}">
-              <span>${item.label}</span>
-            </div>
-          `).join("");
+          setSoftkeys("Abrir", "", "Salir", false);
           lcdBody.innerHTML = `
             <div class="list-view">
               <div class="list-header">Ir a</div>
-              ${htmlItems}
+              ${GOTO_ITEMS.map((item, idx) => `
+                <div class="list-item ${idx === state.gotoIndex ? "selected" : ""}" data-goto-idx="${idx}">
+                  <span>${item.label}</span>
+                </div>
+              `).join("")}
             </div>
           `;
           lcdBody.querySelectorAll("[data-goto-idx]").forEach((el) => {
@@ -1454,26 +2013,204 @@
           return;
         }
 
+        if (state.view === "games") {
+          setSoftkeys("Jugar", "", "Atrás", false);
+          lcdBody.innerHTML = `
+            <div class="list-view">
+              <div class="list-header">Juegos Nokia 3310</div>
+              ${GAMES_LIST.map((g, idx) => `
+                <div class="list-item ${idx === state.gamesIndex ? "selected" : ""}" data-game-idx="${idx}">
+                  <span>${g.label}</span>
+                </div>
+              `).join("")}
+            </div>
+          `;
+          lcdBody.querySelectorAll("[data-game-idx]").forEach((el) => {
+            el.addEventListener("click", () => {
+              state.gamesIndex = Number(el.getAttribute("data-game-idx"));
+              playSoftkeySound(933);
+              openApp(GAMES_LIST[state.gamesIndex].id);
+            });
+          });
+          return;
+        }
+
+        if (state.view === "snakeMenu") {
+          setSoftkeys("Elegir", "", "Atrás", false);
+          const items = [
+            { id: "play", label: "Nuevo juego" },
+            { id: "level", label: "Nivel", val: String(state.snakeLevel) },
+            { id: "maze", label: "Laberintos", val: SNAKE_MAZES[state.snakeMazeIdx].name },
+            { id: "high", label: "Récord", val: String(state.snakeHigh) }
+          ];
+          lcdBody.innerHTML = `
+            <div class="list-view">
+              <div class="list-header">SNAKE II</div>
+              ${items.map((it, idx) => `
+                <div class="list-item ${idx === state.snakeMenuIndex ? "selected" : ""}" data-sm-idx="${idx}">
+                  <span>${it.label}</span>
+                  ${it.val ? `<span class="list-item-val">${it.val}</span>` : ""}
+                </div>
+              `).join("")}
+            </div>
+          `;
+          lcdBody.querySelectorAll("[data-sm-idx]").forEach((el) => {
+            el.addEventListener("click", () => {
+              state.snakeMenuIndex = Number(el.getAttribute("data-sm-idx"));
+              activateSnakeMenuItem();
+            });
+          });
+          return;
+        }
+
+        if (state.view === "snakeLevel") {
+          setSoftkeys("OK", "", "Atrás", false);
+          let bars = "";
+          for (let i = 1; i <= 9; i++) {
+            bars += `<div class="level-bar ${i <= state.snakeLevel ? "filled" : ""}" style="height:${16 + i * 6.5}px;"></div>`;
+          }
+          lcdBody.innerHTML = `
+            <div class="level-bars-wrap">
+              <div style="font-size:14px;font-weight:900;">Nivel: ${state.snakeLevel}</div>
+              <div class="level-bars">${bars}</div>
+              <div style="font-size:10.5px;font-weight:700;">Usa ◀ ▶ en la cruceta</div>
+            </div>
+          `;
+          return;
+        }
+
+        if (state.view === "snakeMaze") {
+          setSoftkeys("OK", "", "Atrás", false);
+          lcdBody.innerHTML = `
+            <div class="list-view">
+              <div class="list-header">Laberintos</div>
+              ${SNAKE_MAZES.map((m, idx) => `
+                <div class="list-item ${idx === state.snakeMazeIdx ? "selected" : ""}" data-mz-idx="${idx}">
+                  <span>${m.name}</span>
+                </div>
+              `).join("")}
+            </div>
+          `;
+          lcdBody.querySelectorAll("[data-mz-idx]").forEach((el) => {
+            el.addEventListener("click", () => {
+              state.snakeMazeIdx = Number(el.getAttribute("data-mz-idx"));
+              savePrefs();
+              playSoftkeySound(933);
+              state.view = "snakeMenu";
+              render();
+            });
+          });
+          return;
+        }
+
+        if (state.view === "snake") {
+          setSoftkeys(snake.gameOver ? "Reintentar" : "Pausa", "", "Salir", false);
+          lcdBody.innerHTML = `
+            <div class="game-view">
+              <div class="game-hud">
+                <span id="snakeScoreHud">${String(snake.score).padStart(4, "0")}</span>
+                <span id="snakeBonusHud">${snake.bonus ? `★ ${snake.bonusTicks}` : `Nv.${state.snakeLevel}`}</span>
+              </div>
+              <div class="game-canvas-wrap">
+                <canvas id="snakeCanvas" class="game-canvas"></canvas>
+                ${snake.gameOver ? `
+                  <div class="game-overlay">
+                    <div>¡FIN DEL JUEGO!</div>
+                    <div>PUNTOS: ${snake.score}</div>
+                    <div>RÉCORD: ${state.snakeHigh}</div>
+                    <div>Pulsa centro para jugar</div>
+                  </div>
+                ` : (!snake.running ? `
+                  <div class="game-overlay">
+                    <div>PAUSA</div>
+                    <div>Pulsa centro para seguir</div>
+                  </div>
+                ` : "")}
+              </div>
+            </div>
+          `;
+          requestAnimationFrame(drawSnake);
+          return;
+        }
+
+        if (state.view === "spaceImpact") {
+          setSoftkeys(space.gameOver ? "Reintentar" : "Misil", "Disparar", "Salir", false);
+          lcdBody.innerHTML = `
+            <div class="game-view">
+              <div class="game-hud">
+                <span id="spaceHudLeft">${"♥".repeat(Math.max(0, space.player.hp))} ★${space.player.specials}</span>
+                <span id="spaceHudRight">N${space.stage} ${String(space.score).padStart(5, "0")}</span>
+              </div>
+              <div class="game-canvas-wrap">
+                <canvas id="spaceCanvas" class="game-canvas"></canvas>
+                ${space.gameOver ? `
+                  <div class="game-overlay">
+                    <div>SPACE IMPACT</div>
+                    <div>PUNTOS: ${space.score}</div>
+                    <div>RÉCORD: ${state.spaceHigh}</div>
+                    <div>Pulsa centro para reintentar</div>
+                  </div>
+                ` : ""}
+              </div>
+            </div>
+          `;
+          requestAnimationFrame(drawSpace);
+          return;
+        }
+
+        if (state.view === "bantumi") {
+          setSoftkeys(bantumi.over ? "Nuevo" : "Mover", "", "Salir", false);
+          const topRow = [12, 11, 10, 9, 8, 7].map((i) => `<div class="bantumi-pit">${bantumi.pits[i]}</div>`).join("");
+          const botRow = [0, 1, 2, 3, 4, 5].map((i) => `
+            <div class="bantumi-pit ${i === bantumi.cursor ? "selected" : ""}" data-bt-idx="${i}">${bantumi.pits[i]}</div>
+          `).join("");
+          lcdBody.innerHTML = `
+            <div class="game-view">
+              <div class="game-hud">
+                <span>BANTUMI</span>
+                <span>${bantumi.msg}</span>
+              </div>
+              <div class="bantumi-board">
+                <div class="bantumi-store">${bantumi.pits[13]}</div>
+                <div class="bantumi-rows">
+                  <div class="bantumi-row">${topRow}</div>
+                  <div class="bantumi-row">${botRow}</div>
+                </div>
+                <div class="bantumi-store">${bantumi.pits[6]}</div>
+              </div>
+            </div>
+          `;
+          lcdBody.querySelectorAll("[data-bt-idx]").forEach((el) => {
+            el.addEventListener("click", () => {
+              if (bantumi.turn !== "player" || bantumi.over) return;
+              const idx = Number(el.getAttribute("data-bt-idx"));
+              bantumi.cursor = idx;
+              playSoftkeySound(933);
+              sowBantumi(idx, true);
+            });
+          });
+          return;
+        }
+
         if (state.view === "customize") {
           setSoftkeys("Cambiar", "", "Atrás", false);
           const rows = getCustomizeRows();
-          const htmlItems = rows.map((row, idx) => `
-            <div class="list-item ${idx === state.customizeIndex ? "selected" : ""}" data-cust-idx="${idx}">
-              <span>${row.label}</span>
-              <span class="list-item-val">${row.value}</span>
-            </div>
-          `).join("");
           lcdBody.innerHTML = `
             <div class="list-view">
               <div class="list-header">Personalizar Launcher</div>
-              ${htmlItems}
+              ${rows.map((row, idx) => `
+                <div class="list-item ${idx === state.customizeIndex ? "selected" : ""}" data-cust-idx="${idx}">
+                  <span>${row.label}</span>
+                  <span class="list-item-val">${row.value}</span>
+                </div>
+              `).join("")}
             </div>
           `;
           lcdBody.querySelectorAll("[data-cust-idx]").forEach((el) => {
             el.addEventListener("click", () => {
               const idx = Number(el.getAttribute("data-cust-idx"));
               state.customizeIndex = idx;
-              playNavBeepSound(933);
+              playSoftkeySound(933);
               toggleCustomizeRow(idx);
             });
           });
@@ -1496,7 +2233,7 @@
               <div class="home-date">${formatDate()}</div>
               <div class="home-clock-strip">
                 <div class="home-line"></div>
-                <div class="home-clock-ribbon">${formatClock4Digits()}</div>
+                <div class="home-clock-ribbon">${formatClockDisplay()}</div>
               </div>
             </div>
             <div class="menu-overlay ${enterClass}" id="menuOverlay">
@@ -1509,43 +2246,12 @@
             el.addEventListener("click", () => {
               const idx = Number(el.getAttribute("data-app-idx"));
               state.menuIndex = idx;
-              playNavBeepSound(933);
+              playSoftkeySound(933);
               openApp(allApps[idx].id);
             });
           });
           const sel = lcdBody.querySelector(".app-tile.selected");
-          if (sel && sel.scrollIntoView) {
-            sel.scrollIntoView({ block: "nearest", behavior: "smooth" });
-          }
-          return;
-        }
-
-        if (state.view === "snake") {
-          setSoftkeys(snake.gameOver ? "Reintentar" : "Pausa", "", "Salir", false);
-          lcdBody.innerHTML = `
-            <div class="snake-view">
-              <div class="snake-hud">
-                <span>SNAKE</span>
-                <span>Pts: <span id="snakeScoreVal">${snake.score}</span> · Máx: <span id="snakeHighVal">${state.snakeHigh}</span></span>
-              </div>
-              <div class="snake-canvas-wrap">
-                <canvas id="snakeCanvas"></canvas>
-                ${snake.gameOver ? `
-                  <div class="snake-overlay">
-                    <div>FIN DEL JUEGO</div>
-                    <div>Puntos: ${snake.score}</div>
-                    <div>Pulsa el centro para reintentar</div>
-                  </div>
-                ` : (!snake.running ? `
-                  <div class="snake-overlay">
-                    <div>PAUSA</div>
-                    <div>Pulsa el centro para seguir</div>
-                  </div>
-                ` : "")}
-              </div>
-            </div>
-          `;
-          requestAnimationFrame(drawSnake);
+          if (sel && sel.scrollIntoView) sel.scrollIntoView({ block: "nearest", behavior: "smooth" });
           return;
         }
 
@@ -1564,10 +2270,7 @@
             </div>
           `;
           lcdBody.querySelectorAll("[data-op]").forEach((btn) => {
-            btn.addEventListener("click", () => {
-              playNavBeepSound(933);
-              handleCalcOp(btn.getAttribute("data-op"));
-            });
+            btn.addEventListener("click", () => { playSoftkeySound(933); handleCalcOp(btn.getAttribute("data-op")); });
           });
           return;
         }
@@ -1587,7 +2290,7 @@
       function activateGotoItem() {
         const item = GOTO_ITEMS[state.gotoIndex];
         if (!item) return;
-        playNavBeepSound(933);
+        playSoftkeySound(933);
         if (item.id === "exit") {
           if (window.AndroidLauncher && typeof window.AndroidLauncher.openHomeSettings === "function") {
             window.AndroidLauncher.openHomeSettings();
@@ -1600,6 +2303,14 @@
         openApp(item.id);
       }
 
+      function activateSnakeMenuItem() {
+        playSoftkeySound(933);
+        if (state.snakeMenuIndex === 0) startSnakeGame();
+        else if (state.snakeMenuIndex === 1) { state.view = "snakeLevel"; render(); }
+        else if (state.snakeMenuIndex === 2) { state.view = "snakeMaze"; render(); }
+        else showToast("Récord Snake II: " + state.snakeHigh);
+      }
+
       function startCall() {
         if (window.AndroidLauncher && typeof window.AndroidLauncher.dialNumber === "function" && state.dialNumber) {
           window.AndroidLauncher.dialNumber(state.dialNumber);
@@ -1608,7 +2319,7 @@
         stopCall();
         state.view = "calling";
         state.callSeconds = 0;
-        playNavBeepSound(933);
+        playSoftkeySound(933);
         render();
         state.callTimer = setInterval(() => {
           state.callSeconds++;
@@ -1619,58 +2330,56 @@
       function handleAction(action) {
         vibrate();
         if (action === "end") {
-          playNavBeepSound(933);
+          playSoftkeySound(933);
           goHome(true);
           return;
         }
 
         if (action === "call") {
+          playSoftkeySound(933);
           if (state.view === "dialer" && state.dialNumber.length > 0) startCall();
-          else if (state.view === "home") {
-            state.dialNumber = "523";
-            startCall();
-          }
+          else if (state.view === "home") { state.dialNumber = "523"; startCall(); }
           return;
         }
 
         if (action === "soft-left") {
-          playNavBeepSound(933);
-          if (state.view === "home") {
-            state.view = "goto";
-            state.gotoIndex = 0;
-            render();
-          } else if (state.view === "goto") {
-            activateGotoItem();
-          } else if (state.view === "customize") {
-            toggleCustomizeRow(state.customizeIndex);
-          } else if (state.view === "snake") {
-            if (snake.gameOver) startSnake();
+          playSoftkeySound(933);
+          if (state.view === "home") { state.view = "goto"; state.gotoIndex = 0; render(); }
+          else if (state.view === "goto") activateGotoItem();
+          else if (state.view === "games") openApp(GAMES_LIST[state.gamesIndex].id);
+          else if (state.view === "snakeMenu") activateSnakeMenuItem();
+          else if (state.view === "snakeLevel" || state.view === "snakeMaze") { savePrefs(); state.view = "snakeMenu"; render(); }
+          else if (state.view === "customize") toggleCustomizeRow(state.customizeIndex);
+          else if (state.view === "snake") {
+            if (snake.gameOver) startSnakeGame();
             else { snake.running = !snake.running; render(); }
-          } else if (state.view === "calc") {
-            handleCalcOp("C");
-          } else if (state.view === "appPreview") {
-            goHome();
-          } else if (state.view === "calling") {
-            showToast("Altavoz activado");
-          }
+          } else if (state.view === "spaceImpact") {
+            if (space.gameOver) startSpaceImpact();
+            else spaceSpecial();
+          } else if (state.view === "bantumi") {
+            if (bantumi.over) startBantumi();
+            else if (bantumi.turn === "player") sowBantumi(bantumi.cursor, true);
+          } else if (state.view === "calc") handleCalcOp("C");
+          else if (state.view === "appPreview") goHome();
+          else if (state.view === "calling") showToast("Altavoz activado");
           return;
         }
 
         if (action === "soft-right") {
-          playNavBeepSound(933);
-          if (state.view === "home") {
-            state.view = "customize";
-            state.customizeIndex = 0;
-            render();
-          } else if (state.view === "dialer") {
+          playSoftkeySound(933);
+          if (state.view === "home") { state.view = "customize"; state.customizeIndex = 0; render(); }
+          else if (state.view === "dialer") {
             state.dialNumber = state.dialNumber.slice(0, -1);
             if (!state.dialNumber) state.view = "home";
             render();
-          } else if (state.view === "calling") {
-            goHome();
+          } else if (state.view === "snake" || state.view === "snakeLevel" || state.view === "snakeMaze") {
+            stopAllGames(); state.view = "snakeMenu"; render();
+          } else if (state.view === "snakeMenu" || state.view === "spaceImpact" || state.view === "bantumi") {
+            stopAllGames(); state.view = "games"; render();
+          } else if (state.view === "games") {
+            state.view = "goto"; render();
           } else if (state.view === "appPreview" || state.view === "calc") {
-            state.view = "menu";
-            render();
+            state.view = "menu"; render();
           } else {
             goHome(true);
           }
@@ -1678,45 +2387,72 @@
         }
 
         if (action === "ok") {
-          playNavBeepSound(933);
           if (state.view === "home") {
+            // Sonido de gota de agua exacto al abrir el Menú
+            playMenuDropSound();
             state.view = "menu";
-            state.menuPage = 0;
             state.menuIndex = 0;
             state.menuAnimateIn = true;
             render();
-          } else if (state.view === "dialer") {
-            showToast("Guardado: " + state.dialNumber);
-          } else if (state.view === "goto") {
-            activateGotoItem();
-          } else if (state.view === "menu") {
+            return;
+          }
+          playSoftkeySound(933);
+          if (state.view === "dialer") showToast("Guardado: " + state.dialNumber);
+          else if (state.view === "goto") activateGotoItem();
+          else if (state.view === "games") openApp(GAMES_LIST[state.gamesIndex].id);
+          else if (state.view === "snakeMenu") activateSnakeMenuItem();
+          else if (state.view === "snakeLevel" || state.view === "snakeMaze") { savePrefs(); state.view = "snakeMenu"; render(); }
+          else if (state.view === "menu") {
             const list = getActiveAppList();
             if (list[state.menuIndex]) openApp(list[state.menuIndex].id);
-          } else if (state.view === "customize") {
-            toggleCustomizeRow(state.customizeIndex);
-          } else if (state.view === "snake") {
-            if (snake.gameOver) startSnake();
+          } else if (state.view === "customize") toggleCustomizeRow(state.customizeIndex);
+          else if (state.view === "snake") {
+            if (snake.gameOver) startSnakeGame();
             else { snake.running = !snake.running; render(); }
-          } else if (state.view === "calc") {
-            handleCalcOp("=");
-          }
+          } else if (state.view === "spaceImpact") {
+            if (space.gameOver) startSpaceImpact();
+            else spaceShoot();
+          } else if (state.view === "bantumi") {
+            if (bantumi.over) startBantumi();
+            else if (bantumi.turn === "player") sowBantumi(bantumi.cursor, true);
+          } else if (state.view === "calc") handleCalcOp("=");
           return;
         }
 
         if (["up", "down", "left", "right"].includes(action)) {
-          playNavBeepSound(933);
+          if (state.view !== "snake" && state.view !== "spaceImpact") playSoftkeySound(933);
+
           if (state.view === "home") {
             if (action === "up") openApp("camera");
-            if (action === "down") { state.view = "menu"; state.menuAnimateIn = true; render(); }
-            if (action === "left") openApp("snake");
+            if (action === "down") { playMenuDropSound(); state.view = "menu"; state.menuAnimateIn = true; render(); }
+            if (action === "left") openApp("games");
             if (action === "right") { state.view = "customize"; render(); }
             return;
           }
           if (state.view === "goto") {
             if (action === "up") state.gotoIndex = (state.gotoIndex - 1 + GOTO_ITEMS.length) % GOTO_ITEMS.length;
             if (action === "down") state.gotoIndex = (state.gotoIndex + 1) % GOTO_ITEMS.length;
-            render();
-            return;
+            render(); return;
+          }
+          if (state.view === "games") {
+            if (action === "up") state.gamesIndex = (state.gamesIndex - 1 + GAMES_LIST.length) % GAMES_LIST.length;
+            if (action === "down") state.gamesIndex = (state.gamesIndex + 1) % GAMES_LIST.length;
+            render(); return;
+          }
+          if (state.view === "snakeMenu") {
+            if (action === "up") state.snakeMenuIndex = (state.snakeMenuIndex - 1 + 4) % 4;
+            if (action === "down") state.snakeMenuIndex = (state.snakeMenuIndex + 1) % 4;
+            render(); return;
+          }
+          if (state.view === "snakeLevel") {
+            if (action === "right" || action === "up") state.snakeLevel = Math.min(9, state.snakeLevel + 1);
+            if (action === "left" || action === "down") state.snakeLevel = Math.max(1, state.snakeLevel - 1);
+            savePrefs(); render(); return;
+          }
+          if (state.view === "snakeMaze") {
+            if (action === "up") state.snakeMazeIdx = (state.snakeMazeIdx - 1 + SNAKE_MAZES.length) % SNAKE_MAZES.length;
+            if (action === "down") state.snakeMazeIdx = (state.snakeMazeIdx + 1) % SNAKE_MAZES.length;
+            savePrefs(); render(); return;
           }
           if (state.view === "customize") {
             const len = getCustomizeRows().length;
@@ -1732,32 +2468,51 @@
             else if (action === "left") state.menuIndex = (state.menuIndex - 1 + total) % total;
             else if (action === "down") state.menuIndex = (state.menuIndex + 4) % total;
             else if (action === "up") state.menuIndex = (state.menuIndex - 4 + total) % total;
-            render();
-            return;
+            render(); return;
+          }
+          if (state.view === "bantumi" && bantumi.turn === "player" && !bantumi.over) {
+            if (action === "right") bantumi.cursor = (bantumi.cursor + 1) % 6;
+            if (action === "left") bantumi.cursor = (bantumi.cursor + 5) % 6;
+            render(); return;
           }
           if (state.view === "snake" && snake.running) {
-            if (action === "up" && snake.dir.y === 0) snake.nextDir = { x: 0, y: -1 };
-            if (action === "down" && snake.dir.y === 0) snake.nextDir = { x: 0, y: 1 };
-            if (action === "left" && snake.dir.x === 0) snake.nextDir = { x: -1, y: 0 };
-            if (action === "right" && snake.dir.x === 0) snake.nextDir = { x: 1, y: 0 };
+            if (action === "up") queueSnakeDir(0, -1);
+            if (action === "down") queueSnakeDir(0, 1);
+            if (action === "left") queueSnakeDir(-1, 0);
+            if (action === "right") queueSnakeDir(1, 0);
+            return;
+          }
+          if (state.view === "spaceImpact" && space.running) {
+            if (action === "up") space.player.y = Math.max(2, space.player.y - 7);
+            if (action === "down") space.player.y = Math.min(space.h - 9, space.player.y + 7);
+            if (action === "left") space.player.x = Math.max(2, space.player.x - 7);
+            if (action === "right") space.player.x = Math.min(space.w * 0.45, space.player.x + 7);
+            drawSpace();
           }
         }
       }
 
       function handleDigit(digit) {
         vibrate();
-        playDtmfSound(digit);
         if (state.view === "snake" && snake.running) {
-          if (digit === "2" && snake.dir.y === 0) snake.nextDir = { x: 0, y: -1 };
-          if (digit === "8" && snake.dir.y === 0) snake.nextDir = { x: 0, y: 1 };
-          if (digit === "4" && snake.dir.x === 0) snake.nextDir = { x: -1, y: 0 };
-          if (digit === "6" && snake.dir.x === 0) snake.nextDir = { x: 1, y: 0 };
+          if (digit === "2") queueSnakeDir(0, -1);
+          if (digit === "8") queueSnakeDir(0, 1);
+          if (digit === "4") queueSnakeDir(-1, 0);
+          if (digit === "6") queueSnakeDir(1, 0);
           return;
         }
-        if (state.view === "calc") {
-          handleCalcDigit(digit);
+        if (state.view === "spaceImpact" && space.running) {
+          if (digit === "2") space.player.y = Math.max(2, space.player.y - 7);
+          if (digit === "8") space.player.y = Math.min(space.h - 9, space.player.y + 7);
+          if (digit === "4") space.player.x = Math.max(2, space.player.x - 7);
+          if (digit === "6") space.player.x = Math.min(space.w * 0.45, space.player.x + 7);
+          if (digit === "5") spaceShoot();
+          if (digit === "*") spaceSpecial();
+          drawSpace();
           return;
         }
+        playDtmfSound(digit);
+        if (state.view === "calc") { handleCalcDigit(digit); return; }
         if (state.view === "home" || state.view === "dialer") {
           if (state.dialNumber.length < 18) {
             state.dialNumber += digit;
@@ -1775,6 +2530,10 @@
         btn.addEventListener("click", () => handleDigit(btn.getAttribute("data-digit")));
       });
 
+      softLeftLabel.addEventListener("click", () => handleAction("soft-left"));
+      softCenterLabel.addEventListener("click", () => handleAction("ok"));
+      softRightLabel.addEventListener("click", () => handleAction("soft-right"));
+
       window.addEventListener("keydown", (e) => {
         if (e.key >= "0" && e.key <= "9") handleDigit(e.key);
         else if (e.key === "*" || e.key === "#") handleDigit(e.key);
@@ -1789,12 +2548,14 @@
 
       window.addEventListener("resize", () => {
         if (state.view === "snake") drawSnake();
+        if (state.view === "spaceImpact") drawSpace();
       });
 
       setInterval(() => {
         if (state.view === "home") render();
       }, 15000);
 
+      window.addEventListener("pointerdown", ensureAudio, { passive: true });
       loadRealAndroidApps();
       applyThemes();
       render();
